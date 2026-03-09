@@ -1,25 +1,28 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Connexion</title>
-        <link rel="stylesheet" href="{% static 'style.css' %}" />
-    </head>
-    <body>
-        <div class="auth-card">
-            <p class="auth-logo">WacStaff</p>
-            <h2>Connexion</h2>
-            <form method="post">
-                {% csrf_token %} {{ form.as_p }}
-                <button type="submit">Se connecter</button>
-            </form>
-            <p class="auth-footer">
-                Pas encore inscrit ?
-                <a href="{% url 'register' %}">S'inscrire</a>
-            </p>
-        </div>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}WacStaff — Connexion{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:center;align-items:center;min-height:60vh;">
+<div style="width:100%;max-width:400px;">
+    <div style="text-align:center;margin-bottom:2rem;">
+        <h1 style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:#FFBC0D;letter-spacing:3px;">Wac<span style="color:#DA291C;">Staff</span></h1>
+        <p style="color:#888;font-size:0.875rem;margin-top:0.5rem;">Gestion du personnel</p>
+    </div>
+    <div class="form-card" style="max-width:100%;">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.7rem;">Se connecter</button>
+        </form>
+        <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:#888;">
+            Pas encore de compte ? <a href="{% url 'register' %}" style="color:#FFBC0D;">S'inscrire</a>
+        </p>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -120,3 +120,4 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = 'home'  # Redirige vers la vue 'home' après connexion
 LOGOUT_REDIRECT_URL = 'login'  # Redirige vers la vue 'login' après déconnexion
+LOGIN_URL = 'login'  # Redirige vers la vue 'login' si non authentifié

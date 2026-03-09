@@ -1,21 +1,46 @@
-<!-- TEMPLATE -->
+{% extends "base.html" %}
+{% block title %}WacStaff — Accueil{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Tableau de <span>bord</span></h1>
+</div>
 
-<!doctype html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Bienvenue !</title>
-        <link rel="stylesheet" href="style.css" />
-    </head>
+<div class="stats-grid">
+    <div class="stat-card">
+        <a href="{% url 'restaurant_list' %}">
+            <div class="stat-num">{{ nb_restaurants }}</div>
+            <div class="stat-label">Restaurants</div>
+        </a>
+    </div>
+    <div class="stat-card">
+        <a href="{% url 'collaborateur_list' %}">
+            <div class="stat-num">{{ nb_collaborateurs }}</div>
+            <div class="stat-label">Collaborateurs</div>
+        </a>
+    </div>
+    <div class="stat-card">
+        <a href="{% url 'fonction_list' %}">
+            <div class="stat-num">{{ nb_fonctions }}</div>
+            <div class="stat-label">Fonctions</div>
+        </a>
+    </div>
+    <div class="stat-card">
+        <a href="{% url 'affectation_list' %}">
+            <div class="stat-num">{{ nb_affectations }}</div>
+            <div class="stat-label">Affectations</div>
+        </a>
+    </div>
+</div>
 
-    
-    <body>
-        {% if user.is_authenticated %}
-        <p>Bonjour, {{ user.username }} !</p>
-        <a href="{% url 'logout' %}">Se déconnecter</a>
-        {% else %}
-        <a href="{% url 'login' %}">Se connecter</a>
-        {% endif %}
-    </body>
-</html>
+{% if user.is_staff %}
+<div class="detail-card">
+    <h2>Actions rapides</h2>
+    <div class="quick-links">
+        <a href="{% url 'restaurant_create' %}" class="btn btn-secondary">+ Nouveau restaurant</a>
+        <a href="{% url 'collaborateur_create' %}" class="btn btn-secondary">+ Nouveau collaborateur</a>
+        <a href="{% url 'fonction_create' %}" class="btn btn-secondary">+ Nouvelle fonction</a>
+        <a href="{% url 'affectation_create' %}" class="btn btn-secondary">+ Nouvelle affectation</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

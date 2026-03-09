@@ -1,24 +1,26 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Inscription</title>
-        <link rel="stylesheet" href="{% static 'style.css' %}" />
-    </head>
-    <body>
-        <div class="auth-card">
-            <p class="auth-logo">WacStaff</p>
-            <h2>Inscription</h2>
-            <form method="post">
-                {% csrf_token %} {{ form.as_p }}
-                <button type="submit">S'inscrire</button>
-            </form>
-            <p class="auth-footer">
-                Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a>
-            </p>
-        </div>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}WacStaff — Inscription{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:center;padding-top:2rem;">
+<div style="width:100%;max-width:420px;">
+    <h1 class="page-title" style="margin-bottom:1.5rem;">Créer un <span>compte</span></h1>
+    <div class="form-card" style="max-width:100%;">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<p class="helptext">{{ field.help_text }}</p>{% endif %}
+                {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Créer le compte</button>
+        </form>
+        <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:#888;">
+            Déjà un compte ? <a href="{% url 'login' %}" style="color:#FFBC0D;">Se connecter</a>
+        </p>
+    </div>
+</div>
+</div>
+{% endblock %}

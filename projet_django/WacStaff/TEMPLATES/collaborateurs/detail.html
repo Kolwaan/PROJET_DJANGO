@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}{{ collaborateur.prenom }} {{ collaborateur.nom }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><span>{{ collaborateur.prenom }} {{ collaborateur.nom }}</span></h1>
+    <div style="display:flex;gap:0.5rem;">
+        {% if user.is_staff %}
+        <a href="{% url 'collaborateur_edit' collaborateur.pk %}" class="btn btn-secondary">Modifier</a>
+        <a href="{% url 'affectation_create' %}?collaborateur={{ collaborateur.pk }}" class="btn btn-primary">+ Affectation</a>
+        {% endif %}
+        <a href="{% url 'collaborateur_list' %}" class="btn btn-secondary">← Retour</a>
+    </div>
+</div>
+
+<div class="detail-card">
+    <h2>Informations</h2>
+    <div class="detail-grid">
+        <div class="detail-field"><label>Email</label><p>{{ collaborateur.email }}</p></div>
+        <div class="detail-field"><label>Date d'embauche</label><p>{{ collaborateur.date1ereEmbauche|date:"d/m/Y" }}</p></div>
+        <div class="detail-field"><label>Rôle</label><p>{% if collaborateur.admin %}<span class="badge badge-admin">Administrateur</span>{% else %}Employé{% endif %}</p></div>
+    </div>
+</div>
+
+<form method="get" class="search-bar" style="margin-top:1.5rem;">
+    <div>
+        <label>Poste</label>
+        <input type="text" name="poste" value="{{ q_poste }}" placeholder="Équipier…">
+    </div>
+    <div>
+        <label>Début à partir de</label>
+        <input type="date" name="debut" value="{{ q_debut }}">
+    </div>
+    <button type="submit" class="btn btn-secondary">Filtrer</button>
+    <a href="{% url 'collaborateur_detail' collaborateur.pk %}" class="btn btn-secondary">Réinitialiser</a>
+</form>
+
+<h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1px;margin:1rem 0 0.75rem;">
+    Affectations en cours <span style="color:#4ade80;">●</span>
+</h2>
+<div class="table-wrap" style="margin-bottom:1.5rem;">
+    {% if affectations_actives %}
+    <table>
+        <thead><tr><th>Restaurant</th><th>Poste</th><th>Début</th>{% if user.is_staff %}<th>Actions</th>{% endif %}</tr></thead>
+        <tbody>
+        {% for a in affectations_actives %}
+        <tr>
+            <td><a href="{% url 'restaurant_detail' a.restaurant.pk %}" style="color:#FFBC0D;text-decoration:none;">{{ a.restaurant.nom }}</a></td>
+            <td>{{ a.poste.intitulePoste }}</td>
+            <td>{{ a.debut|date:"d/m/Y" }}</td>
+            {% if user.is_staff %}
+            <td class="td-actions">
+                <a href="{% url 'affectation_edit' a.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">Aucune affectation active.</div>
+    {% endif %}
+</div>
+
+<h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1px;margin:0 0 0.75rem;">
+    Historique <span style="color:#888;">●</span>
+</h2>
+<div class="table-wrap">
+    {% if affectations_historique %}
+    <table>
+        <thead><tr><th>Restaurant</th><th>Poste</th><th>Début</th><th>Fin</th></tr></thead>
+        <tbody>
+        {% for a in affectations_historique %}
+        <tr>
+            <td><a href="{% url 'restaurant_detail' a.restaurant.pk %}" style="color:#FFBC0D;text-decoration:none;">{{ a.restaurant.nom }}</a></td>
+            <td>{{ a.poste.intitulePoste }}</td>
+            <td>{{ a.debut|date:"d/m/Y" }}</td>
+            <td>{{ a.fin|date:"d/m/Y" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">Aucun historique.</div>
+    {% endif %}
+</div>
+{% endblock %}
