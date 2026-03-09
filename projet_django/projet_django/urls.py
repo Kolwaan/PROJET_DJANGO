@@ -8,5 +8,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('WacStaff/', include('WacStaff.urls')),  # délègue à l'app
-    path('WacStaff/', include('django.contrib.auth.urls')),  # Pour les vues d'authentification intégrées
+    path('auth/', include('django.contrib.auth.urls')),  # Pour les vues d'authentification intégrées
 ]

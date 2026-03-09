@@ -1,16 +1,24 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Inscription</title>
+        <link rel="stylesheet" href="{% static 'style.css' %}" />
+    </head>
     <body>
-        <h2>Inscription</h2>
-        <form method="post">
-            {% csrf_token %} {{ form.as_p }}
-            <button type="submit">S'inscrire</button>
-        </form>
+        <div class="auth-card">
+            <p class="auth-logo">WacStaff</p>
+            <h2>Inscription</h2>
+            <form method="post">
+                {% csrf_token %} {{ form.as_p }}
+                <button type="submit">S'inscrire</button>
+            </form>
+            <p class="auth-footer">
+                Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a>
+            </p>
+        </div>
     </body>
 </html>

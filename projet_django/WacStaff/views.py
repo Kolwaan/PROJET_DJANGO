@@ -3,10 +3,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
 
 
 # VUE D'ACCUEIL
+@login_required      # pour ne pas que ce soit accessible à tout le monde
 def home(request):                  # La fonction home est une vue. Elle reçoit une requête HTTP (ici GET)
                                     # et renvoie une réponse.
                                         

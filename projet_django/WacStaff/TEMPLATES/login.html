@@ -1,19 +1,25 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Connexion</title>
+        <link rel="stylesheet" href="{% static 'style.css' %}" />
+    </head>
     <body>
-        <h2>Connexion</h2>
-        <form method="post">
-            {% csrf_token %} {{ form.as_p }}
-            <button type="submit">Se connecter</button>
-        </form>
-        <p>
-            Pas encore inscrit ? <a href="{% url 'register' %}">S'inscrire</a>
-        </p>
+        <div class="auth-card">
+            <p class="auth-logo">WacStaff</p>
+            <h2>Connexion</h2>
+            <form method="post">
+                {% csrf_token %} {{ form.as_p }}
+                <button type="submit">Se connecter</button>
+            </form>
+            <p class="auth-footer">
+                Pas encore inscrit ?
+                <a href="{% url 'register' %}">S'inscrire</a>
+            </p>
+        </div>
     </body>
 </html>

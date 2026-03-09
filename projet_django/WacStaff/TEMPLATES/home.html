@@ -1,15 +1,21 @@
 <!-- TEMPLATE -->
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue !</title>
-    <link rel="stylesheet" href="style.css">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bienvenue !</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
 
-</head>
+    
     <body>
-        <h1>Bienvenue sur mon site !</h1>
+        {% if user.is_authenticated %}
+        <p>Bonjour, {{ user.username }} !</p>
+        <a href="{% url 'logout' %}">Se déconnecter</a>
+        {% else %}
+        <a href="{% url 'login' %}">Se connecter</a>
+        {% endif %}
     </body>
 </html>
