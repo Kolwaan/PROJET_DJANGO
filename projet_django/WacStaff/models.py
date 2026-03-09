@@ -1,9 +1,10 @@
+# À chaque modif d'un modèle, on doit faire une migration.
+
 from django.db import models
 
-
 class Collaborateur(models.Model):
-    nom = models.CharField(max_length=100, unique=True)
-    prenom = models.CharField(max_length=100, unique=True)
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, unique=True)
     date1ereEmbauche = models.DateTimeField(auto_now_add=True)
     admin = models.BooleanField(default=False)
