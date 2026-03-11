@@ -197,7 +197,8 @@ def collaborateur_list(request):
         qs = qs.filter(email__icontains=q_email)
     if non_affectes:
         # Collaborateurs sans aucune affectation active (fin est null)
-        qs = qs.exclude(affectations__fin__isnull=True)
+        active_ids = Affectation.objects.filter(fin__isnull=True).values('collaborateur_id')
+        qs = qs.exclude(pk__in=active_ids)
     return render(request, 'collaborateurs/list.html', {
         'collaborateurs': qs, 'q_nom': q_nom, 'q_prenom': q_prenom,
         'q_email': q_email, 'non_affectes': non_affectes,
