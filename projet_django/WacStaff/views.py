@@ -99,12 +99,12 @@ def restaurant_detail(request, pk):
 @login_required
 def restaurant_create(request):
     if not request.user.is_staff:
-        messages.error(request, "Accès réservé aux administrateurs.")
+        messages.error(request, "Accès réservé aux administrateurs.")   # notification flash
         return redirect('restaurant_list')
     form = RestaurantForm(request.POST or None)
     if form.is_valid():
         form.save()
-        messages.success(request, "Restaurant créé avec succès.")
+        messages.success(request, "Restaurant créé avec succès.")   # notification flash
         return redirect('restaurant_list')
     return render(request, 'restaurants/form.html', {'form': form, 'action': 'Créer'})
 
