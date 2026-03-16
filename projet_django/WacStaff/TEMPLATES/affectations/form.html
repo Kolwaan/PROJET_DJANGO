@@ -1,24 +1,32 @@
-{% extends "base.html" %}
-{% block title %}{{ action }} une affectation{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ action }} une affectation{%
+endblock %} {% block content %}
 <div class="page-header">
     <h1 class="page-title">{{ action }} une <span>affectation</span></h1>
-    <a href="{% url 'affectation_list' %}" class="btn btn-secondary">← Retour</a>
+    <a href="{% url 'affectation_list' %}" class="btn btn-secondary"
+        >← Retour</a
+    >
 </div>
 <div class="form-card">
     <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
+        {% csrf_token %} {% for field in form %}
         <div class="form-group">
             <label>{{ field.label }}</label>
-            {{ field }}
-            {% if field.help_text %}<p class="helptext">{{ field.help_text }}</p>{% endif %}
-            {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            {{ field }} {% if field.help_text %}
+            <p class="helptext">{{ field.help_text }}</p>
+            {% endif %} {% if field.errors %}
+            <ul class="errorlist">
+                {% for e in field.errors %}
+                <li>{{ e }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
         {% endfor %}
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">{{ action }}</button>
-            <a href="{% url 'affectation_list' %}" class="btn btn-secondary">Annuler</a>
+            <a href="{% url 'affectation_list' %}" class="btn btn-secondary"
+                >Annuler</a
+            >
         </div>
     </form>
 </div>

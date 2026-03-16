@@ -1,51 +1,93 @@
-{% extends "base.html" %}
-{% block title %}Restaurants{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Restaurants{% endblock %} {% block
+content %}
 <div class="page-header">
     <h1 class="page-title">🍔 <span>Restaurants</span></h1>
     {% if user.is_staff %}
-    <a href="{% url 'restaurant_create' %}" class="btn btn-primary">+ Nouveau</a>
+    <a href="{% url 'restaurant_create' %}" class="btn btn-primary"
+        >+ Nouveau</a
+    >
     {% endif %}
 </div>
 
 <form method="get" class="search-bar">
     <div>
         <label>Nom</label>
-        <input type="text" name="nom" value="{{ q_nom }}" placeholder="McDonald's Vieux-Port…">
+        <input
+            type="text"
+            name="nom"
+            value="{{ q_nom }}"
+            placeholder="McDonald's Vieux-Port…"
+        />
     </div>
     <div>
         <label>Code postal</label>
-        <input type="text" name="codePostal" value="{{ q_cp }}" placeholder="13001">
+        <input
+            type="text"
+            name="codePostal"
+            value="{{ q_cp }}"
+            placeholder="13001"
+        />
     </div>
     <div>
         <label>Ville</label>
-        <input type="text" name="ville" value="{{ q_ville }}" placeholder="Marseille">
+        <input
+            type="text"
+            name="ville"
+            value="{{ q_ville }}"
+            placeholder="Marseille"
+        />
     </div>
     <button type="submit" class="btn btn-secondary">Rechercher</button>
-    <a href="{% url 'restaurant_list' %}" class="btn btn-secondary">Réinitialiser</a>
+    <a href="{% url 'restaurant_list' %}" class="btn btn-secondary"
+        >Réinitialiser</a
+    >
 </form>
 
 <div class="table-wrap">
     {% if restaurants %}
     <table>
         <thead>
-            <tr><th>Nom</th><th>Adresse</th><th>CP</th><th>Ville</th><th>Actions</th></tr>
+            <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>CP</th>
+                <th>Ville</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
-        {% for r in restaurants %}
-        <tr>
-            <td><a href="{% url 'restaurant_detail' r.pk %}" style="color:#FFBC0D;text-decoration:none;font-weight:500;">{{ r.nom }}</a></td>
-            <td>{{ r.adresse }}</td>
-            <td>{{ r.codePostal }}</td>
-            <td>{{ r.ville }}</td>
-            <td class="td-actions">
-                <a href="{% url 'restaurant_detail' r.pk %}" class="btn btn-secondary btn-sm">Voir</a>
-                {% if user.is_staff %}
-                <a href="{% url 'restaurant_edit' r.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+            {% for r in restaurants %}
+            <tr>
+                <td>
+                    <a
+                        href="{% url 'restaurant_detail' r.pk %}"
+                        style="
+                            color: #ffbc0d;
+                            text-decoration: none;
+                            font-weight: 500;
+                        "
+                        >{{ r.nom }}</a
+                    >
+                </td>
+                <td>{{ r.adresse }}</td>
+                <td>{{ r.codePostal }}</td>
+                <td>{{ r.ville }}</td>
+                <td class="td-actions">
+                    <a
+                        href="{% url 'restaurant_detail' r.pk %}"
+                        class="btn btn-secondary btn-sm"
+                        >Voir</a
+                    >
+                    {% if user.is_staff %}
+                    <a
+                        href="{% url 'restaurant_edit' r.pk %}"
+                        class="btn btn-secondary btn-sm"
+                        >Modifier</a
+                    >
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
     {% else %}

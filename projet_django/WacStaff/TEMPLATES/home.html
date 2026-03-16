@@ -1,6 +1,5 @@
-{% extends "base.html" %}
-{% block title %}WacStaff — Accueil{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}WacStaff — Accueil{% endblock %} {%
+block content %}
 <div class="page-header">
     <h1 class="page-title">Tableau de <span>bord</span></h1>
 </div>
@@ -36,11 +35,18 @@
 <div class="detail-card">
     <h2>Actions rapides</h2>
     <div class="quick-links">
-        <a href="{% url 'restaurant_create' %}" class="btn btn-secondary">+ Nouveau restaurant</a>
-        <a href="{% url 'collaborateur_create' %}" class="btn btn-secondary">+ Nouveau collaborateur</a>
-        <a href="{% url 'fonction_create' %}" class="btn btn-secondary">+ Nouvelle fonction</a>
-        <a href="{% url 'affectation_create' %}" class="btn btn-secondary">+ Nouvelle affectation</a>
+        <a href="{% url 'restaurant_create' %}" class="btn btn-secondary"
+            >+ Nouveau restaurant</a
+        >
+        <a href="{% url 'collaborateur_create' %}" class="btn btn-secondary"
+            >+ Nouveau collaborateur</a
+        >
+        <a href="{% url 'fonction_create' %}" class="btn btn-secondary"
+            >+ Nouvelle fonction</a
+        >
+        <a href="{% url 'affectation_create' %}" class="btn btn-secondary"
+            >+ Nouvelle affectation</a
+        >
     </div>
 </div>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}

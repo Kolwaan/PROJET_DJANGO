@@ -1,48 +1,65 @@
 <!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{% block title %}WacStaff{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'wacstaff.css' %}">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}WacStaff{% endblock %}</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'wacstaff.css' %}" />
+    </head>
+    <body>
+        {% if user.is_authenticated %}
+        <nav>
+            <a href="{% url 'home' %}" class="nav-brand"
+                >Wac<span>Staff</span></a
+            >
+            <div class="nav-links">
+                <a href="{% url 'restaurant_list' %}">🍔 Restaurants</a>
+                <a href="{% url 'collaborateur_list' %}">👤 Collaborateurs</a>
+                <a href="{% url 'fonction_list' %}">🏷️ Fonctions</a>
+                <a href="{% url 'affectation_list' %}">📋 Affectations</a>
+            </div>
+            <div class="nav-user">
+                <span
+                    >Connecté en tant que
+                    <strong>{{ user.username }}</strong> {% if user.is_staff
+                    %}<span class="badge badge-admin">Admin</span>{% endif %}
+                </span>
+                <form
+                    method="post"
+                    action="{% url 'logout' %}"
+                    style="display: inline"
+                >
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">
+                        Déconnexion
+                    </button>
+                </form>
+            </div>
+        </nav>
+        {% endif %}
 
-{% if user.is_authenticated %}
-<nav>
-    <a href="{% url 'home' %}" class="nav-brand">Wac<span>Staff</span></a>
-    <div class="nav-links">
-        <a href="{% url 'restaurant_list' %}">🍔 Restaurants</a>
-        <a href="{% url 'collaborateur_list' %}">👤 Collaborateurs</a>
-        <a href="{% url 'fonction_list' %}">🏷️ Fonctions</a>
-        <a href="{% url 'affectation_list' %}">📋 Affectations</a>
-    </div>
-    <div class="nav-user">
-        <span>Connecté en tant que <strong>{{ user.username }}</strong>
-        {% if user.is_staff %}<span class="badge badge-admin">Admin</span>{% endif %}
-        </span>
-        <form method="post" action="{% url 'logout' %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn-logout">Déconnexion</button>
-        </form>
-    </div>
-</nav>
-{% endif %}
+        <main>
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div
+                    class="msg {% if message.tags == 'error' %}msg-error{% else %}msg-success{% endif %}"
+                >
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %} {% block content %}{% endblock %}
+        </main>
 
-<main>
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="msg {% if message.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+        <footer>
+            <span class="footer-brand">Wac<span>Staff</span></span>
+            <span class="footer-copy"
+                >© {% now "Y" %} — Application de gestion du personnel</span
+            >
+        </footer>
 
-    {% block content %}{% endblock %}
-</main>
-
-</body>
+        <script src="{% static 'wacstaff.js' %}"></script>
+    </body>
 </html>
