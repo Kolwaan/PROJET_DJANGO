@@ -1,13 +1,14 @@
 # DÉCIDE QUOI AFFICHER
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 from .forms import (
-    CustomUserCreationForm,
-    RestaurantForm, FonctionForm, CollaborateurForm, AffectationForm
+    LoginForm,
+    CollaborateurCreationForm, CollaborateurChangeForm,
+    RestaurantForm, FonctionForm, AffectationForm
 )
 from .models import Restaurant, Fonction, Collaborateur, Affectation
 
@@ -30,27 +31,15 @@ def home(request):
 # AUTH
 # ─────────────────────────────────────────────
 
-def register_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
-
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        form = LoginForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             return redirect('home')
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
 
@@ -99,12 +88,12 @@ def restaurant_detail(request, pk):
 @login_required
 def restaurant_create(request):
     if not request.user.is_staff:
-        messages.error(request, "Accès réservé aux administrateurs.")   # notification flash
+        messages.error(request, "Accès réservé aux administrateurs.")
         return redirect('restaurant_list')
     form = RestaurantForm(request.POST or None)
     if form.is_valid():
         form.save()
-        messages.success(request, "Restaurant créé avec succès.")   # notification flash
+        messages.success(request, "Restaurant créé avec succès.")
         return redirect('restaurant_list')
     return render(request, 'restaurants/form.html', {'form': form, 'action': 'Créer'})
 
@@ -196,9 +185,7 @@ def collaborateur_list(request):
     if q_email:
         qs = qs.filter(email__icontains=q_email)
     if non_affectes:
-        # Collaborateurs sans aucune affectation active (fin est null)
-        active_ids = Affectation.objects.filter(fin__isnull=True).values('collaborateur_id')
-        qs = qs.exclude(pk__in=active_ids)
+        qs = qs.filter(Q(affectations__isnull=True) | Q(affectations__fin__isnull=False)).distinct()
     return render(request, 'collaborateurs/list.html', {
         'collaborateurs': qs, 'q_nom': q_nom, 'q_prenom': q_prenom,
         'q_email': q_email, 'non_affectes': non_affectes,
@@ -228,7 +215,7 @@ def collaborateur_create(request):
     if not request.user.is_staff:
         messages.error(request, "Accès réservé aux administrateurs.")
         return redirect('collaborateur_list')
-    form = CollaborateurForm(request.POST or None)
+    form = CollaborateurCreationForm(request.POST or None, superuser=request.user.is_superuser)
     if form.is_valid():
         form.save()
         messages.success(request, "Collaborateur créé.")
@@ -242,7 +229,7 @@ def collaborateur_edit(request, pk):
         messages.error(request, "Accès réservé aux administrateurs.")
         return redirect('collaborateur_list')
     collaborateur = get_object_or_404(Collaborateur, pk=pk)
-    form = CollaborateurForm(request.POST or None, instance=collaborateur)
+    form = CollaborateurChangeForm(request.POST or None, instance=collaborateur, superuser=request.user.is_superuser)
     if form.is_valid():
         form.save()
         messages.success(request, "Collaborateur modifié.")

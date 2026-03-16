@@ -1,125 +1,64 @@
-{% extends "base.html" %} {% block title %}{{ restaurant.nom }}{% endblock %} {%
-block content %}
+{% extends "base.html" %}
+{% block title %}{{ restaurant.nom }}{% endblock %}
+{% block content %}
 <div class="page-header">
     <h1 class="page-title"><span>{{ restaurant.nom }}</span></h1>
-    <div style="display: flex; gap: 0.5rem">
+    <div style="display:flex;gap:0.5rem;">
         {% if user.is_staff %}
-        <a
-            href="{% url 'restaurant_edit' restaurant.pk %}"
-            class="btn btn-secondary"
-            >Modifier</a
-        >
-        <a
-            href="{% url 'affectation_create' %}?restaurant={{ restaurant.pk }}"
-            class="btn btn-primary"
-            >+ Affectation</a
-        >
+        <a href="{% url 'restaurant_edit' restaurant.pk %}" class="btn btn-secondary">Modifier</a>
+        <a href="{% url 'affectation_create' %}?restaurant={{ restaurant.pk }}" class="btn btn-primary">+ Affectation</a>
         {% endif %}
-        <a href="{% url 'restaurant_list' %}" class="btn btn-secondary"
-            >← Retour</a
-        >
+        <a href="{% url 'restaurant_list' %}" class="btn btn-secondary">← Retour</a>
     </div>
 </div>
 
 <div class="detail-card">
     <h2>Informations</h2>
     <div class="detail-grid">
-        <div class="detail-field">
-            <label>Adresse</label>
-            <p>{{ restaurant.adresse }}</p>
-        </div>
-        <div class="detail-field">
-            <label>Code postal</label>
-            <p>{{ restaurant.codePostal }}</p>
-        </div>
-        <div class="detail-field">
-            <label>Ville</label>
-            <p>{{ restaurant.ville }}</p>
-        </div>
+        <div class="detail-field"><label>Adresse</label><p>{{ restaurant.adresse }}</p></div>
+        <div class="detail-field"><label>Code postal</label><p>{{ restaurant.codePostal }}</p></div>
+        <div class="detail-field"><label>Ville</label><p>{{ restaurant.ville }}</p></div>
     </div>
 </div>
 
-<div class="page-header" style="margin-top: 1.5rem">
-    <h2
-        style="
-            font-family: &quot;Bebas Neue&quot;, sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-        "
-    >
-        Collaborateurs affectés
-    </h2>
+<div class="page-header" style="margin-top:1.5rem;">
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;">Collaborateurs affectés</h2>
 </div>
 
 <form method="get" class="search-bar">
     <div>
         <label>Poste</label>
-        <input
-            type="text"
-            name="poste"
-            value="{{ q_poste }}"
-            placeholder="Équipier…"
-        />
+        <input type="text" name="poste" value="{{ q_poste }}" placeholder="Équipier…">
     </div>
     <div>
         <label>Début à partir de</label>
-        <input type="date" name="debut" value="{{ q_debut }}" />
+        <input type="date" name="debut" value="{{ q_debut }}">
     </div>
     <button type="submit" class="btn btn-secondary">Filtrer</button>
-    <a
-        href="{% url 'restaurant_detail' restaurant.pk %}"
-        class="btn btn-secondary"
-        >Réinitialiser</a
-    >
+    <a href="{% url 'restaurant_detail' restaurant.pk %}" class="btn btn-secondary">Réinitialiser</a>
 </form>
 
 <div class="table-wrap">
     {% if affectations %}
     <table>
         <thead>
-            <tr>
-                <th>Collaborateur</th>
-                <th>Poste</th>
-                <th>Début</th>
-                <th>Fin</th>
-                <th>Statut</th>
-                {% if user.is_staff %}
-                <th>Actions</th>
-                {% endif %}
-            </tr>
+            <tr><th>Collaborateur</th><th>Poste</th><th>Début</th><th>Fin</th><th>Statut</th>{% if user.is_staff %}<th>Actions</th>{% endif %}</tr>
         </thead>
         <tbody>
-            {% for a in affectations %}
-            <tr>
-                <td>
-                    <a
-                        href="{% url 'collaborateur_detail' a.collaborateur.pk %}"
-                        style="color: #ffbc0d; text-decoration: none"
-                        >{{ a.collaborateur.prenom }} {{ a.collaborateur.nom
-                        }}</a
-                    >
-                </td>
-                <td>{{ a.poste.intitulePoste }}</td>
-                <td>{{ a.debut|date:"d/m/Y" }}</td>
-                <td>
-                    {% if a.fin %}{{ a.fin|date:"d/m/Y" }}{% else %}—{% endif %}
-                </td>
-                <td>
-                    {% if a.fin %}<span class="badge badge-closed">Terminé</span
-                    >{% else %}<span class="badge badge-active">En cours</span
-                    >{% endif %}
-                </td>
-                {% if user.is_staff %}
-                <td class="td-actions">
-                    <a
-                        href="{% url 'affectation_edit' a.pk %}"
-                        class="btn btn-secondary btn-sm"
-                        >Modifier</a
-                    >
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
+        {% for a in affectations %}
+        <tr>
+            <td><a href="{% url 'collaborateur_detail' a.collaborateur.pk %}" style="color:#FFBC0D;text-decoration:none;">{{ a.collaborateur.prenom }} {{ a.collaborateur.nom }}</a></td>
+            <td>{{ a.poste.intitulePoste }}</td>
+            <td>{{ a.debut|date:"d/m/Y" }}</td>
+            <td>{% if a.fin %}{{ a.fin|date:"d/m/Y" }}{% else %}—{% endif %}</td>
+            <td>{% if a.fin %}<span class="badge badge-closed">Terminé</span>{% else %}<span class="badge badge-active">En cours</span>{% endif %}</td>
+            {% if user.is_staff %}
+            <td class="td-actions">
+                <a href="{% url 'affectation_edit' a.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
     {% else %}

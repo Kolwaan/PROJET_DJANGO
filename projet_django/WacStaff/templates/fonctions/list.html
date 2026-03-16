@@ -1,5 +1,6 @@
-{% extends "base.html" %} {% block title %}Fonctions{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+{% block title %}Fonctions{% endblock %}
+{% block content %}
 <div class="page-header">
     <h1 class="page-title">🏷️ <span>Fonctions</span></h1>
     {% if user.is_staff %}
@@ -10,40 +11,22 @@ content %}
 <div class="table-wrap">
     {% if fonctions %}
     <table>
-        <thead>
-            <tr>
-                <th>Intitulé du poste</th>
-                {% if user.is_staff %}
-                <th>Actions</th>
-                {% endif %}
-            </tr>
-        </thead>
+        <thead><tr><th>Intitulé du poste</th>{% if user.is_staff %}<th>Actions</th>{% endif %}</tr></thead>
         <tbody>
-            {% for f in fonctions %}
-            <tr>
-                <td style="font-weight: 500">{{ f.intitulePoste }}</td>
-                {% if user.is_staff %}
-                <td class="td-actions">
-                    <a
-                        href="{% url 'fonction_edit' f.pk %}"
-                        class="btn btn-secondary btn-sm"
-                        >Modifier</a
-                    >
-                    <form
-                        method="post"
-                        action="{% url 'fonction_delete' f.pk %}"
-                        style="display: inline"
-                        data-confirm="Supprimer cette fonction ?"
-                    >
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            Supprimer
-                        </button>
-                    </form>
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
+        {% for f in fonctions %}
+        <tr>
+            <td style="font-weight:500;">{{ f.intitulePoste }}</td>
+            {% if user.is_staff %}
+            <td class="td-actions">
+                <a href="{% url 'fonction_edit' f.pk %}" class="btn btn-secondary btn-sm">Modifier</a>
+                <form method="post" action="{% url 'fonction_delete' f.pk %}" style="display:inline;" data-confirm="Supprimer cette fonction ?">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
     {% else %}
