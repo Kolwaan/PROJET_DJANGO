@@ -92,7 +92,7 @@ class Command(BaseCommand):
                 'collaborateur': collaborateurs['Jean Lechat'],
                 'restaurant':    restaurants['WacDo Lune Sud'],
                 'poste':         fonctions['Responsable de restaurant'],
-                'fin':           timezone.datetime(2025, 3, 15, tzinfo=timezone.utc),  # terminée
+                'fin':           timezone.datetime(2025, 3, 15, tzinfo=timezone.UTC),  # terminée
             },
             {
                 'collaborateur': collaborateurs['Jean Lechat'],
