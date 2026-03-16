@@ -50,8 +50,8 @@ class Collaborateur(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_staff(self):
-        # Django consulte is_staff pour l'accès à /admin/ et nos vues
-        # On le branche directement sur notre champ admin
+        # Django consulte is_staff pour l'accès à /admin/ et aux vues
+        # On le branche directement sur le champ admin
         return self.admin
 
     def __str__(self):
