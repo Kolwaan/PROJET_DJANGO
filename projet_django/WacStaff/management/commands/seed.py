@@ -58,14 +58,21 @@ class Command(BaseCommand):
             password = data.pop('password')
             is_superuser = data.pop('is_superuser')
             if is_superuser:
-                collab = Collaborateur.objects.create_superuser(password=password, **data)
+                collab = Collaborateur.objects.create_superuser(
+                    email=data['email'],
+                    password=password,
+                    nom=data['nom'],
+                    prenom=data['prenom'],
+                )
+                collab.admin = data.get('admin', False)
+                collab.save()
             else:
                 collab = Collaborateur(**data)
                 collab.set_password(password)
                 collab.save()
             collaborateurs[f"{data['prenom']} {data['nom']}"] = collab
         self.stdout.write(self.style.SUCCESS(f'  {len(collaborateurs)} collaborateurs créés'))
-
+        
         # ─── AFFECTATIONS ──────────────────────────────
         self.stdout.write('Création des affectations...')
         affectations_data = [
