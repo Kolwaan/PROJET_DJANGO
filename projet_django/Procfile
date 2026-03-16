@@ -1,0 +1,1 @@
+web: gunicorn --chdir projet_django projet_django.wsgi --log-file -
