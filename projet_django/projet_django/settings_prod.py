@@ -18,7 +18,7 @@ ALLOWED_HOSTS = [os.environ['RENDER_EXTERNAL_HOSTNAME']]  # fourni automatiqueme
 
 DATABASES = {
     'default': dj_database_url.config(
-        conn_str=os.environ['DATABASE_URL'],  # fourni automatiquement par Render
+        default=os.environ['DATABASE_URL'],  # fourni automatiquement par Render
         conn_max_age=600,
     )
 }
