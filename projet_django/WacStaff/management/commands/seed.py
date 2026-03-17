@@ -8,13 +8,10 @@ from WacStaff.models import Restaurant, Fonction, Collaborateur, Affectation
 class Command(BaseCommand):
     help = 'Remplit la base de données avec les données initiales'
 
-    def handle(self, *args, **kwargs):
-        self.stdout.write('Suppression des données existantes...')
-        # On supprime dans l'ordre pour respecter les contraintes FK
-        Affectation.objects.all().delete()
-        Collaborateur.objects.all().delete()
-        Fonction.objects.all().delete()
-        Restaurant.objects.all().delete()
+    def handle(self, *args, **kwargs):        
+        if Collaborateur.objects.exists() or Restaurant.objects.exists() or Fonction.objects.exists() or Affectation.objects.exists():
+            self.stdout.write('Base déjà peuplée, seed ignoré.')
+            return
 
         # ─── RESTAURANTS ───────────────────────────────
         self.stdout.write('Création des restaurants...')
