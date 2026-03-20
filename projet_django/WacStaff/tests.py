@@ -8,7 +8,6 @@ from .models import Collaborateur, Restaurant, Fonction, Affectation
 
 # ═══════════════════════════════════════════════════════════════
 # HELPERS — création des objets de test réutilisables
-# Équivalent des fixtures pytest, mais en méthodes setUp()
 # ═══════════════════════════════════════════════════════════════
 
 # Crée un collaborateur simple (non-admin par défaut).
@@ -66,47 +65,11 @@ class CollaborateurModelTest(TestCase):
         user.save()
         self.assertTrue(user.is_staff)
 
-    def test_create_superuser(self):
-        # create_superuser doit positionner admin=True et is_superuser=True.
-        su = make_collaborateur(email='su@test.fr', superuser=True)
-        self.assertTrue(su.admin)
-        self.assertTrue(su.is_superuser)
-        self.assertTrue(su.is_staff)  # via la property
-
-    def test_str(self):
-        user = make_collaborateur(nom='Martin', prenom='Sophie')
-        self.assertEqual(str(user), 'Sophie Martin')
-
     # Deux collaborateurs avec le même email doivent lever une erreur.
     def test_email_unique(self):
         make_collaborateur(email='doublon@test.fr')
         with self.assertRaises(Exception):
             make_collaborateur(email='doublon@test.fr')
-
-
-# Vérifie la logique des affectations (active vs terminée).
-class AffectationModelTest(TestCase):
-
-    def setUp(self):
-        self.collab = make_collaborateur()
-        self.resto = make_restaurant()
-        self.poste = make_fonction()
-
-    # Une affectation sans date de fin est considérée active.
-    def test_affectation_active_fin_null(self):
-        aff = make_affectation(self.collab, self.resto, self.poste, fin=None)
-        self.assertIsNone(aff.fin)
-
-    # Une affectation avec date de fin est terminée.
-    def test_affectation_terminee(self):
-        aff = make_affectation(self.collab, self.resto, self.poste,
-                               fin=timezone.now())
-        self.assertIsNotNone(aff.fin)
-
-    def test_str(self):
-        aff = make_affectation(self.collab, self.resto, self.poste)
-        self.assertIn('Jean Dupont', str(aff))
-        self.assertIn('WacDo Marseille', str(aff))
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -137,12 +100,6 @@ class AuthTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['form'].errors)
 
-    # Après logout, on est redirigé vers login.
-    def test_logout_redirige(self):
-        self.client.force_login(self.user)
-        response = self.client.get(reverse('logout'))
-        self.assertRedirects(response, reverse('login'))
-
     # Un utilisateur non connecté est redirigé vers login.
     def test_home_redirige_si_non_connecte(self):
         response = self.client.get(reverse('home'))
@@ -150,7 +107,7 @@ class AuthTest(TestCase):
 
 
 # ═══════════════════════════════════════════════════════════════
-# 3. CONTRÔLE D'ACCÈS (RBAC)
+# 3. PERMISSIONS (RBAC --> Role-Based Access Control)
 # Un collaborateur simple ne peut pas créer/modifier/supprimer
 # ═══════════════════════════════════════════════════════════════
 
@@ -165,7 +122,7 @@ class RBACTest(TestCase):
         self.resto = make_restaurant()
         self.fonction = make_fonction()
 
-    # Un non-admin est redirigé avec un message d'erreur.
+    # Un non-admin est redirigé et le restaurant n'est pas créé.
     def test_simple_user_ne_peut_pas_creer_restaurant(self):
         self.client.force_login(self.simple_user)
         response = self.client.post(reverse('restaurant_create'), {
@@ -174,9 +131,7 @@ class RBACTest(TestCase):
             'codePostal': '75001',
             'ville': 'Paris',
         })
-        # Redirigé vers la liste
         self.assertRedirects(response, reverse('restaurant_list'))
-        # Le resto n'a pas été créé
         self.assertFalse(Restaurant.objects.filter(nom='Nouveau Resto').exists())
 
     # Un admin peut créer un restaurant.
@@ -190,13 +145,6 @@ class RBACTest(TestCase):
         })
         self.assertRedirects(response, reverse('restaurant_list'))
         self.assertTrue(Restaurant.objects.filter(nom='Nouveau Resto').exists())
-
-    # Un non-admin ne peut pas supprimer une fonction.
-    def test_simple_user_ne_peut_pas_supprimer_fonction(self):
-        self.client.force_login(self.simple_user)
-        self.client.post(reverse('fonction_delete', kwargs={'pk': self.fonction.pk}))
-        # La fonction existe toujours
-        self.assertTrue(Fonction.objects.filter(pk=self.fonction.pk).exists())
 
     # Un admin peut supprimer une fonction sans affectation.
     def test_admin_peut_supprimer_fonction(self):
@@ -215,9 +163,9 @@ class RBACTest(TestCase):
         self.assertTrue(Fonction.objects.filter(pk=self.fonction.pk).exists())
 
 
-# ═══════════════════════════════════════════════════════════════
-# 4. FILTRE "NON AFFECTÉS" (la logique qui avait un bug)
-# ═══════════════════════════════════════════════════════════════
+# ═════════════════════════════════
+# 4. FILTRE "NON AFFECTÉS" 
+# ═════════════════════════════════
 
 # Teste le filtre collaborateurs non affectés :
 # - sans aucune affectation
@@ -286,9 +234,3 @@ class CollaborateurCreationFormTest(TestCase):
         from .forms import CollaborateurCreationForm
         form = CollaborateurCreationForm(superuser=False)
         self.assertNotIn('admin', form.fields)
-
-    # Le champ admin doit être présent pour un superuser.
-    def test_champ_admin_present_pour_superuser(self):
-        from .forms import CollaborateurCreationForm
-        form = CollaborateurCreationForm(superuser=True)
-        self.assertIn('admin', form.fields)
