@@ -7,7 +7,7 @@ from .models import Collaborateur, Restaurant, Fonction, Affectation
 
 
 # ═══════════════════════════════════════════════════════════════
-# HELPERS — création des objets de test réutilisables
+# HELPERS — Fonctions pour créer rapidement des objets pour les tests (DRY)
 # ═══════════════════════════════════════════════════════════════
 
 # Crée un collaborateur simple (non-admin par défaut).
