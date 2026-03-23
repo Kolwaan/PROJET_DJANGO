@@ -35,6 +35,8 @@ class CollaborateurManager(BaseUserManager):
 # COLLABORATEUR — remplace le modèle User de Django
 # ─────────────────────────────────────────────
 
+# Collaborateur est le user, il le remplace complètement.
+# C'est la table en BDD
 class Collaborateur(AbstractBaseUser, PermissionsMixin):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)

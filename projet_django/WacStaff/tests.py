@@ -57,7 +57,7 @@ class CollaborateurModelTest(TestCase):
         self.assertNotEqual(user.password, 'pass123')
         self.assertTrue(user.check_password('pass123'))
 
-    def test_is_staff_reflete_admin(self):
+    def test_is_staff_renvoie_admin(self):
         # is_staff est une property branchée sur le champ admin.
         user = make_collaborateur(admin=False)
         self.assertFalse(user.is_staff)
@@ -65,7 +65,7 @@ class CollaborateurModelTest(TestCase):
         user.save()
         self.assertTrue(user.is_staff)
 
-    # Deux collaborateurs avec le même email doivent lever une erreur.
+    # Deux collaborateurs avec le même email --> erreur.
     def test_email_unique(self):
         make_collaborateur(email='doublon@test.fr')
         with self.assertRaises(Exception):
