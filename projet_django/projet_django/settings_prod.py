@@ -18,11 +18,11 @@ ALLOWED_HOSTS = [os.environ['RENDER_EXTERNAL_HOSTNAME']]  # fourni automatiqueme
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ['DATABASE_URL'],  # fourni automatiquement par Render
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
+        ssl_require=True
     )
 }
-
 
 # ─── FICHIERS STATIQUES (whitenoise) ───────────────────────────────────────────
 
